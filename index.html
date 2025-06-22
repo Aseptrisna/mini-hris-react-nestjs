@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Interaktif: Proyek SAP (React & NestJS)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: "Slate & Amber" - Warm Neutrals -->
+    <!-- Application Structure Plan: Desain aplikasi ini menggunakan tata letak dua panel yang terinspirasi oleh dokumentasi teknis modern. Panel navigasi kiri yang 'sticky' berfungsi sebagai daftar isi interaktif, memungkinkan pengguna untuk melompat ke bagian mana pun dari panduan dengan cepat. Panel kanan berisi konten utama yang dapat digulir. Struktur ini dipilih karena panduan teknis bersifat padat dan seringkali memerlukan navigasi bolak-balik; daftar isi yang selalu terlihat secara drastis meningkatkan kegunaan. Interaksi utama termasuk navigasi scroll-spy (menyorot tautan navigasi saat pengguna menggulir konten) dan tombol 'salin ke papan klip' untuk semua blok kode, yang secara langsung mendukung alur kerja developer. Struktur ini mengubah dokumen statis menjadi alat bantu belajar yang dinamis dan efisien. -->
+    <!-- Visualization & Content Choices: 
+        - Laporan Info: Tabel Hak Akses -> Goal: Membandingkan -> Metode: Tabel HTML (Tailwind) -> Interaksi: Tidak ada, hanya visualisasi statis -> Justifikasi: Tabel adalah cara paling jelas dan standar untuk menampilkan data matriks seperti hak akses.
+        - Laporan Info: Perintah CLI & Cuplikan Kode -> Goal: Menginstruksikan -> Metode: Blok `<pre><code>` yang diberi gaya -> Interaksi: Tombol "Salin" untuk menyalin konten ke papan klip -> Justifikasi: Ini adalah interaksi paling penting bagi developer yang mengikuti tutorial, menghilangkan kebutuhan untuk menyalin manual dan mengurangi potensi kesalahan.
+        - Laporan Info: Struktur Proyek -> Goal: Mengorganisir -> Metode: Daftar `<ul>` bertingkat yang diberi gaya -> Interaksi: Tidak ada, representasi visual -> Justifikasi: Meniru tampilan pohon file, memberikan pemahaman visual yang cepat tentang organisasi proyek.
+        - Laporan Info: Proses Langkah-demi-Langkah -> Goal: Menuntun -> Metode: Navigasi samping yang terstruktur -> Interaksi: Klik untuk menggulir, dan scroll-spy untuk menyorot bagian aktif -> Justifikasi: Memandu pengguna secara visual melalui proses linear tutorial sambil memungkinkan akses non-linear.
+        Library/Method: Semua interaksi diimplementasikan dengan Vanilla JavaScript. Tidak ada chart yang digunakan karena kontennya bersifat instruksional, bukan data kuantitatif. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code&display=swap');
+        pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+        }
+        .nav-link.active {
+            color: #f59e0b; /* amber-500 */
+            font-weight: 600;
+            border-left-color: #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-full md:w-64 lg:w-72 bg-slate-900 text-slate-300 p-6 md:h-screen md:sticky top-0">
+            <h1 class="text-xl font-bold text-white mb-6">Proyek SAP</h1>
+            <nav id="nav-menu">
+                <ul class="space-y-2">
+                    <li><a href="#pendahuluan" class="nav-link block p-2 rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Pendahuluan</a></li>
+                    <li>
+                        <h2 class="text-sm font-semibold text-slate-400 mt-4 mb-2 uppercase tracking-wider">Backend: NestJS</h2>
+                        <ul class="space-y-2 border-l border-slate-700 ml-2">
+                            <li><a href="#backend-prasyarat" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 0: Prasyarat</a></li>
+                            <li><a href="#backend-init" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 1: Inisialisasi</a></li>
+                            <li><a href="#backend-deps" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 2: Dependensi</a></li>
+                            <li><a href="#backend-config" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 3: Konfigurasi</a></li>
+                            <li><a href="#backend-auth" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 4: Modul Auth</a></li>
+                            <li><a href="#backend-crud" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 5: Modul CRUD</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h2 class="text-sm font-semibold text-slate-400 mt-4 mb-2 uppercase tracking-wider">Frontend: React</h2>
+                        <ul class="space-y-2 border-l border-slate-700 ml-2">
+                            <li><a href="#frontend-prasyarat" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 0: Prasyarat</a></li>
+                            <li><a href="#frontend-init" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 1: Inisialisasi</a></li>
+                            <li><a href="#frontend-tailwind" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 2: Tailwind CSS</a></li>
+                            <li><a href="#frontend-deps" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 3: Dependensi Lain</a></li>
+                            <li><a href="#frontend-struktur" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 4: Struktur Folder</a></li>
+                            <li><a href="#frontend-api-context" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 5: API & Context</a></li>
+                            <li><a href="#frontend-routing" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 6: Routing</a></li>
+                            <li><a href="#frontend-pages" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 7: Halaman & Komponen</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <h2 class="text-sm font-semibold text-slate-400 mt-4 mb-2 uppercase tracking-wider">Deployment & Lanjutan</h2>
+                        <ul class="space-y-2 border-l border-slate-700 ml-2">
+                            <li><a href="#menjalankan" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Menjalankan Proyek</a></li>
+                            <li><a href="#lanjutan" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Pengembangan Lanjutan</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10 lg:p-12">
+            <div class="max-w-4xl mx-auto">
+                <section id="pendahuluan" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4 text-slate-900">Panduan Lengkap: Membangun Aplikasi SAP dengan React & NestJS</h2>
+                    <p class="text-lg text-slate-600 mb-6">Selamat datang di versi interaktif dari panduan lengkap membangun aplikasi web modern. Bagian ini akan menuntun Anda melalui setiap langkah, mulai dari penyiapan backend hingga pengembangan antarmuka frontend, lengkap dengan cuplikan kode yang dapat disalin.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                            <h3 class="font-semibold text-lg mb-2">Stack Teknologi</h3>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1">
+                                <li><strong>Frontend:</strong> React (Vite), Tailwind CSS</li>
+                                <li><strong>Backend:</strong> NestJS, MongoDB</li>
+                                <li><strong>Autentikasi:</strong> JSON Web Tokens (JWT)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
+                            <h3 class="font-semibold text-lg mb-2">Fitur & Hak Akses</h3>
+                            <p class="text-slate-600">Aplikasi ini memiliki 3 peran pengguna: SuperAdmin, Admin Perusahaan, dan Karyawan.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-slate-600">
+                                <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">Fitur / Hak Akses</th>
+                                        <th scope="col" class="px-6 py-3 text-center">SuperAdmin</th>
+                                        <th scope="col" class="px-6 py-3 text-center">Admin Perusahaan</th>
+                                        <th scope="col" class="px-6 py-3 text-center">Karyawan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">Login</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                    </tr>
+                                    <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Perusahaan</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                    </tr>
+                                    <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD User Perusahaan</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                    </tr>
+                                    <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Karyawan</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                    </tr>
+                                    <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Gaji</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                    </tr>
+                                    <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Cuti</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                    </tr>
+                                    <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">Mengajukan Cuti</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                    </tr>
+                                     <tr class="bg-white border-b">
+                                        <td class="px-6 py-4 font-medium text-slate-900">Melihat Gaji</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                    </tr>
+                                     <tr class="bg-white">
+                                        <td class="px-6 py-4 font-medium text-slate-900">Profile</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="space-y-12">
+                    <section id="backend-prasyarat">
+                        <h3 class="text-2xl font-bold mb-3 text-slate-900">Backend: Langkah 0 - Prasyarat</h3>
+                        <p class="text-slate-600 mb-4">Bagian ini akan memandu Anda dalam membangun backend aplikasi menggunakan NestJS. Backend akan bertanggung jawab atas semua logika bisnis, koneksi database, dan autentikasi. Pastikan Anda sudah menginstal perangkat lunak berikut sebelum melanjutkan.</p>
+                        <ul class="list-disc list-inside text-slate-600 space-y-2">
+                           <li>Node.js (versi LTS)</li>
+                           <li>NestJS CLI: <code class="bg-slate-200 text-sm p-1 rounded">npm i -g @nestjs/cli</code></li>
+                           <li>MongoDB (local atau cloud seperti MongoDB Atlas)</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="backend-init">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 1 - Inisialisasi Proyek</h3>
+                        <p class="text-slate-600 mb-4">Gunakan NestJS CLI untuk membuat proyek backend baru. Perintah ini akan menghasilkan struktur folder dan file dasar yang dibutuhkan.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">nest new sap-backend
+cd sap-backend</code></pre>
+                        </div>
+                    </section>
+                    
+                    <section id="backend-deps">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 2 - Instalasi Dependensi</h3>
+                        <p class="text-slate-600 mb-4">Kita akan menambahkan beberapa pustaka penting untuk berinteraksi dengan MongoDB, mengelola variabel lingkungan, menangani autentikasi JWT, dan melakukan validasi data.</p>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash"># Untuk interaksi dengan MongoDB
+npm install @nestjs/mongoose mongoose
+
+# Untuk manajemen environment variables (.env)
+npm install @nestjs/config
+
+# Untuk autentikasi dengan JWT dan hashing password
+npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
+npm install --save-dev @types/passport-jwt @types/bcrypt
+
+# Untuk validasi data (DTOs)
+npm install class-validator class-transformer</code></pre>
+                        </div>
+                    </section>
+                    
+                    <section id="backend-config">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 3 - Konfigurasi Database & Lingkungan</h3>
+                        <p class="text-slate-600 mb-4">Konfigurasi koneksi ke MongoDB dan rahasia JWT melalui file `.env` untuk menjaga keamanan kredensial. Kemudian, muat konfigurasi ini ke dalam modul utama aplikasi NestJS.</p>
+                        <h4 class="font-semibold mt-4 mb-2">File: .env</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">MONGO_URI=mongodb://localhost:27017/sap_db
+JWT_SECRET=RAHASIA_SUPER_SECRET_JANGAN_DIBAGIKAN</code></pre>
+                        </div>
+                        <h4 class="font-semibold mt-4 mb-2">File: src/app.module.ts</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">// src/app.module.ts
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+// ... modul lain akan ditambahkan di sini
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGO_URI'),
+      }),
+      inject: [ConfigService],
+    }),
+    // ... modul lain akan ditambahkan di sini
+  ],
+  // ... controllers and providers
+})
+export class AppModule {}</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="backend-auth">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 4 - Modul Autentikasi (Auth)</h3>
+                        <p class="text-slate-600 mb-4">Modul ini adalah inti dari sistem keamanan aplikasi, menangani proses login dan melindungi endpoint dengan JSON Web Tokens (JWT). Kita akan membuat skema pengguna, layanan validasi, dan strategi proteksi rute.</p>
+                        
+                        <h4 class="font-semibold mt-4 mb-2">Generate Modul</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">nest g module auth
+nest g service auth
+nest g controller auth
+nest g module users
+nest g service users
+nest g controller users</code></pre>
+                        </div>
+
+                        <h4 class="font-semibold mt-4 mb-2">File: src/users/schemas/user.schema.ts</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import * as bcrypt from 'bcrypt';
+
+export enum UserRole {
+  SUPER_ADMIN = 'SuperAdmin',
+  COMPANY_ADMIN = 'Admin Perusahaan',
+  EMPLOYEE = 'Karyawan',
+}
+
+@Schema({ timestamps: true })
+export class User extends Document {
+  // ... props: email, password, name, role, company
+}
+
+export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});</code></pre>
+                        </div>
+
+                         <h4 class="font-semibold mt-4 mb-2">File: src/auth/guards/roles.guard.ts</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { UserRole } from '../../users/schemas/user.schema';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>('roles', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (!requiredRoles) {
+      return true;
+    }
+    const { user } = context.switchToHttp().getRequest();
+    return requiredRoles.some((role) => user.role?.includes(role));
+  }
+}</code></pre>
+                        </div>
+                    </section>
+                    
+                    <section id="backend-crud">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 5 - Modul CRUD</h3>
+                        <p class="text-slate-600 mb-4">Setelah autentikasi siap, kita akan membangun modul untuk setiap fitur utama (Perusahaan, Karyawan, dll.). Setiap modul akan mengikuti pola: Skema -> DTO -> Modul -> Controller -> Service. Endpoint akan dilindungi oleh role guard yang telah kita buat.</p>
+                         <h4 class="font-semibold mt-4 mb-2">Contoh Controller: src/companies/companies.controller.ts</h4>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { CompaniesService } from './companies.service';
+import { CreateCompanyDto } from './dto/create-company.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/schemas/user.schema';
+
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Controller('companies')
+export class CompaniesController {
+  constructor(private readonly companiesService: CompaniesService) {}
+
+  @Post()
+  @Roles(UserRole.SUPER_ADMIN) // Hanya SuperAdmin yang bisa membuat
+  create(@Body() createCompanyDto: CreateCompanyDto) {
+    return this.companiesService.create(createCompanyDto);
+  }
+  // ... (Implementasi Get, Patch, Delete)
+}</code></pre>
+                        </div>
+                    </section>
+                    
+                    <div class="border-t border-slate-200 my-12"></div>
+                    
+                    <section id="frontend-prasyarat">
+                        <h3 class="text-2xl font-bold mb-3 text-slate-900">Frontend: Langkah 0 - Prasyarat</h3>
+                        <p class="text-slate-600 mb-4">Sekarang kita beralih ke sisi frontend, yaitu antarmuka yang akan dilihat dan digunakan oleh pengguna. Kita akan menggunakan React (dengan Vite sebagai build tool) dan Tailwind CSS untuk styling. Pastikan Anda memiliki Node.js terinstal.</p>
+                    </section>
+                    
+                    <section id="frontend-init">
+                        <h3 class="text-2xl font-bold mb-3">Frontend: Langkah 1 - Inisialisasi Proyek</h3>
+                        <p class="text-slate-600 mb-4">Buat proyek React baru menggunakan Vite, yang memberikan pengalaman development yang sangat cepat.</p>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">npm create vite@latest sap-frontend -- --template react
+cd sap-frontend
+npm install</code></pre>
+                        </div>
+                    </section>
+                    
+                    <section id="frontend-tailwind">
+                        <h3 class="text-2xl font-bold mb-3">Frontend: Langkah 2 - Instalasi & Konfigurasi Tailwind CSS</h3>
+                        <p class="text-slate-600 mb-4">Integrasikan Tailwind CSS ke dalam proyek untuk styling yang cepat dan konsisten menggunakan utility classes.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p</code></pre>
+                        </div>
+                        <h4 class="font-semibold mt-4 mb-2">File: src/index.css</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-css">@tailwind base;
+@tailwind components;
+@tailwind utilities;</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="frontend-deps">
+                        <h3 class="text-2xl font-bold mb-3">Frontend: Langkah 3 - Instalasi Dependensi Lainnya</h3>
+                        <p class="text-slate-600 mb-4">Instal pustaka untuk routing halaman, melakukan permintaan HTTP ke backend, dan mendekode token JWT.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">npm install react-router-dom axios jwt-decode</code></pre>
+                        </div>
+                    </section>
+                    
+                     <section id="frontend-struktur">
+                        <h3 class="text-2xl font-bold mb-3">Frontend: Langkah 4 - Struktur Folder Proyek</h3>
+                        <p class="text-slate-600 mb-4">Organisasi folder yang baik adalah kunci untuk proyek yang mudah dikelola. Berikut adalah struktur yang disarankan untuk proyek React kita.</p>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">src/
+├── api/          # Konfigurasi Axios & panggilan API
+├── components/   # Komponen UI (Button, Input, Table)
+├── context/      # React Context (AuthContext)
+├── hooks/        # Custom hooks (useAuth)
+├── layouts/      # Layout utama (MainLayout)
+├── pages/        # Halaman (Login, Dashboard, dll.)
+├── App.jsx       # Routing utama
+└── main.jsx</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="frontend-api-context">
+                        <h3 class="text-2xl font-bold mb-3">Frontend: Langkah 5 - Setup API Service & Auth Context</h3>
+                        <p class="text-slate-600 mb-4">Buat sebuah instance Axios terpusat untuk berkomunikasi dengan backend dan sebuah AuthContext untuk mengelola state autentikasi pengguna (seperti siapa yang login) secara global di seluruh aplikasi.</p>
+                        <h4 class="font-semibold mt-4 mb-2">File: src/context/AuthContext.jsx</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-jsx">import { createContext, useState, useEffect, useContext } from 'react';
+import jwt_decode from 'jwt-decode';
+import apiClient from '../api/axios';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('authToken') || null);
+
+  useEffect(() => {
+    if (token) {
+      const decoded = jwt_decode(token);
+      setUser({ email: decoded.email, role: decoded.role, id: decoded.sub });
+    } else {
+      setUser(null);
+    }
+  }, [token]);
+
+  const login = async (email, password) => {
+    const response = await apiClient.post('/auth/login', { email, password });
+    const newToken = response.data.access_token;
+    setToken(newToken);
+    localStorage.setItem('authToken', newToken);
+  };
+
+  const logout = () => { /* ... */ };
+
+  return (
+    <AuthContext.Provider value={{ user, token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="frontend-routing">
+                        <h3 class="text-2xl font-bold mb-3">Frontend: Langkah 6 - Routing dan Protected Routes</h3>
+                        <p class="text-slate-600 mb-4">Atur sistem routing aplikasi menggunakan React Router. Buat komponen `ProtectedRoute` untuk memastikan hanya pengguna dengan peran yang sesuai yang dapat mengakses halaman tertentu.</p>
+                         <h4 class="font-semibold mt-4 mb-2">File: src/App.jsx</h4>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-jsx">import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import LoginPage from './pages/LoginPage';
+import DashboardSuperAdmin from './pages/DashboardSuperAdmin';
+import ProtectedRoute from './components/ProtectedRoute';
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          
+          {/* Rute untuk SuperAdmin */}
+          <Route element={<ProtectedRoute allowedRoles={['SuperAdmin']} />}>
+            <Route path="/superadmin/dashboard" element={<DashboardSuperAdmin />} />
+          </Route>
+          
+          {/* ... rute lain untuk Admin dan Karyawan */}
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
+
+export default App;</code></pre>
+                        </div>
+                    </section>
+                    
+                    <section id="frontend-pages">
+                        <h3 class="text-2xl font-bold mb-3">Frontend: Langkah 7 - Halaman & Komponen</h3>
+                        <p class="text-slate-600 mb-4">Buat komponen untuk setiap halaman (misalnya, `LoginPage`, `DashboardSuperAdmin`). Halaman-halaman ini akan mengambil data dari backend menggunakan API client yang sudah dibuat dan menampilkannya kepada pengguna.</p>
+                        <h4 class="font-semibold mt-4 mb-2">Contoh Halaman: src/pages/LoginPage.jsx</h4>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-jsx">import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
+const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { login, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => { /* ... */ };
+
+  useEffect(() => {
+    if (user) {
+        if (user.role === 'SuperAdmin') navigate('/superadmin/dashboard');
+        // ... redirect lain berdasarkan peran
+    }
+  }, [user, navigate]);
+
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
+        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+        <form onSubmit={handleSubmit}>
+          {/* ... input fields & button ... */}
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default LoginPage;</code></pre>
+                        </div>
+                    </section>
+
+                    <div class="border-t border-slate-200 my-12"></div>
+                    
+                    <section id="menjalankan">
+                        <h3 class="text-2xl font-bold mb-3 text-slate-900">Cara Menjalankan Proyek</h3>
+                        <p class="text-slate-600 mb-4">Untuk menjalankan aplikasi secara lokal, Anda perlu menjalankan server backend dan server development frontend secara bersamaan di terminal yang terpisah.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold mb-2">1. Jalankan Backend</h4>
+                                <div class="code-block-wrapper">
+                                    <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash"># di folder sap-backend
+npm run start:dev</code></pre>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">2. Jalankan Frontend</h4>
+                                 <div class="code-block-wrapper">
+                                    <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash"># di folder sap-frontend
+npm run dev</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section id="lanjutan">
+                        <h3 class="text-2xl font-bold mb-3">Pengembangan Lanjutan</h3>
+                        <p class="text-slate-600 mb-4">Panduan ini adalah fondasi yang kuat. Berikut adalah beberapa ide untuk pengembangan lebih lanjut:</p>
+                        <ul class="list-disc list-inside text-slate-600 space-y-2">
+                           <li><strong>Seed Data:</strong> Buat script untuk mengisi data awal, seperti akun SuperAdmin.</li>
+                           <li><strong>UI/UX:</strong> Gunakan library komponen seperti Shadcn/ui atau Headless UI.</li>
+                           <li><strong>Manajemen State:</strong> Pertimbangkan Zustand atau Redux Toolkit untuk state yang lebih kompleks.</li>
+                           <li><strong>Testing:</strong> Tulis unit test dan e2e test untuk memastikan kualitas aplikasi.</li>
+                           <li><strong>Deployment:</strong> Pelajari cara mendeploy backend (Render, Heroku) dan frontend (Vercel, Netlify).</li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Copy to Clipboard functionality ---
+            const allCodeBlocks = document.querySelectorAll('.code-block-wrapper');
+
+            allCodeBlocks.forEach(wrapper => {
+                const code = wrapper.querySelector('pre');
+                const copyButton = document.createElement('button');
+                copyButton.textContent = 'Salin';
+                copyButton.className = 'absolute top-2 right-2 bg-slate-600 hover:bg-slate-500 text-white text-xs font-semibold py-1 px-2 rounded-md transition-colors duration-200';
+                wrapper.style.position = 'relative';
+                wrapper.appendChild(copyButton);
+
+                copyButton.addEventListener('click', () => {
+                    const codeToCopy = code.innerText;
+                    navigator.clipboard.writeText(codeToCopy).then(() => {
+                        copyButton.textContent = 'Disalin!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Salin';
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Gagal menyalin kode: ', err);
+                    });
+                });
+            });
+
+            // --- Scroll-spy for navigation ---
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '-30% 0px -70% 0px' });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+             // --- Smooth scroll for nav links ---
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
