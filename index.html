@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panduan Interaktif: Proyek SAP (React & NestJS)</title>
+    <title>Panduan Interaktif: Proyek SAP (Node.js & React)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Chosen Palette: "Slate & Amber" - Warm Neutrals -->
@@ -35,20 +35,21 @@
 
     <div class="flex flex-col md:flex-row">
         <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="w-full md:w-64 lg:w-72 bg-slate-900 text-slate-300 p-6 md:h-screen md:sticky top-0">
+        <aside id="sidebar" class="w-full md:w-64 lg:w-72 bg-slate-900 text-slate-300 p-6 md:h-screen md:sticky top-0 overflow-y-auto">
             <h1 class="text-xl font-bold text-white mb-6">Proyek SAP</h1>
             <nav id="nav-menu">
                 <ul class="space-y-2">
                     <li><a href="#pendahuluan" class="nav-link block p-2 rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Pendahuluan</a></li>
                     <li>
-                        <h2 class="text-sm font-semibold text-slate-400 mt-4 mb-2 uppercase tracking-wider">Backend: NestJS</h2>
+                        <h2 class="text-sm font-semibold text-slate-400 mt-4 mb-2 uppercase tracking-wider">Backend: Node.js</h2>
                         <ul class="space-y-2 border-l border-slate-700 ml-2">
                             <li><a href="#backend-prasyarat" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 0: Prasyarat</a></li>
                             <li><a href="#backend-init" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 1: Inisialisasi</a></li>
                             <li><a href="#backend-deps" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 2: Dependensi</a></li>
-                            <li><a href="#backend-config" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 3: Konfigurasi</a></li>
-                            <li><a href="#backend-auth" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 4: Modul Auth</a></li>
-                            <li><a href="#backend-crud" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 5: Modul CRUD</a></li>
+                            <li><a href="#backend-struktur" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 3: Struktur Proyek</a></li>
+                            <li><a href="#backend-config" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 4: Konfigurasi</a></li>
+                            <li><a href="#backend-models" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 5: Models (Schema)</a></li>
+                            <li><a href="#backend-routes" class="nav-link block py-1 px-3 text-sm rounded-md hover:bg-slate-700 transition-colors duration-200 border-l-4 border-transparent">Langkah 6: Routes & Controllers</a></li>
                         </ul>
                     </li>
                     <li>
@@ -79,7 +80,7 @@
         <main class="flex-1 p-6 md:p-10 lg:p-12">
             <div class="max-w-4xl mx-auto">
                 <section id="pendahuluan" class="mb-12">
-                    <h2 class="text-3xl font-bold mb-4 text-slate-900">Panduan Lengkap: Membangun Aplikasi SAP dengan React & NestJS</h2>
+                    <h2 class="text-3xl font-bold mb-4 text-slate-900">Panduan Lengkap: Membangun Aplikasi SAP dengan Node.js & React</h2>
                     <p class="text-lg text-slate-600 mb-6">Selamat datang di versi interaktif dari panduan lengkap membangun aplikasi web modern. Bagian ini akan menuntun Anda melalui setiap langkah, mulai dari penyiapan backend hingga pengembangan antarmuka frontend, lengkap dengan cuplikan kode yang dapat disalin.</p>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
@@ -87,7 +88,7 @@
                             <h3 class="font-semibold text-lg mb-2">Stack Teknologi</h3>
                             <ul class="list-disc list-inside text-slate-600 space-y-1">
                                 <li><strong>Frontend:</strong> React (Vite), Tailwind CSS</li>
-                                <li><strong>Backend:</strong> NestJS, MongoDB</li>
+                                <li><strong>Backend:</strong> Node.js (Express), MongoDB</li>
                                 <li><strong>Autentikasi:</strong> JSON Web Tokens (JWT)</li>
                             </ul>
                         </div>
@@ -109,60 +110,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">Login</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                    </tr>
-                                    <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Perusahaan</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                    </tr>
-                                    <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD User Perusahaan</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                    </tr>
-                                    <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Karyawan</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                    </tr>
-                                    <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Gaji</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                    </tr>
-                                    <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">CRUD Cuti</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                    </tr>
-                                    <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">Mengajukan Cuti</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                    </tr>
-                                     <tr class="bg-white border-b">
-                                        <td class="px-6 py-4 font-medium text-slate-900">Melihat Gaji</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-red-500 font-bold">-</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                    </tr>
-                                     <tr class="bg-white">
-                                        <td class="px-6 py-4 font-medium text-slate-900">Profile</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                        <td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td>
-                                    </tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">Login</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td></tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">CRUD Perusahaan</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td></tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">CRUD User Perusahaan</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td></tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">CRUD Karyawan</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td></tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">CRUD Gaji</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td></tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">CRUD Cuti</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td></tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">Mengajukan Cuti</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td></tr>
+                                    <tr class="bg-white border-b"><td class="px-6 py-4 font-medium text-slate-900">Melihat Gaji</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-red-500 font-bold">-</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td></tr>
+                                    <tr class="bg-white"><td class="px-6 py-4 font-medium text-slate-900">Profile</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td><td class="px-6 py-4 text-center text-green-500 font-bold">✔️</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -172,169 +128,191 @@
                 <div class="space-y-12">
                     <section id="backend-prasyarat">
                         <h3 class="text-2xl font-bold mb-3 text-slate-900">Backend: Langkah 0 - Prasyarat</h3>
-                        <p class="text-slate-600 mb-4">Bagian ini akan memandu Anda dalam membangun backend aplikasi menggunakan NestJS. Backend akan bertanggung jawab atas semua logika bisnis, koneksi database, dan autentikasi. Pastikan Anda sudah menginstal perangkat lunak berikut sebelum melanjutkan.</p>
+                        <p class="text-slate-600 mb-4">Bagian ini akan memandu Anda dalam membangun backend aplikasi menggunakan Node.js dengan framework Express.js. Pastikan Anda sudah menginstal perangkat lunak berikut sebelum melanjutkan.</p>
                         <ul class="list-disc list-inside text-slate-600 space-y-2">
-                           <li>Node.js (versi LTS)</li>
-                           <li>NestJS CLI: <code class="bg-slate-200 text-sm p-1 rounded">npm i -g @nestjs/cli</code></li>
+                           <li>Node.js (versi LTS) dan npm</li>
                            <li>MongoDB (local atau cloud seperti MongoDB Atlas)</li>
                         </ul>
                     </section>
                     
                     <section id="backend-init">
                         <h3 class="text-2xl font-bold mb-3">Backend: Langkah 1 - Inisialisasi Proyek</h3>
-                        <p class="text-slate-600 mb-4">Gunakan NestJS CLI untuk membuat proyek backend baru. Perintah ini akan menghasilkan struktur folder dan file dasar yang dibutuhkan.</p>
+                        <p class="text-slate-600 mb-4">Buat folder baru untuk proyek backend Anda dan inisialisasi proyek Node.js menggunakan npm.</p>
                         <div class="code-block-wrapper">
-                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">nest new sap-backend
-cd sap-backend</code></pre>
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">mkdir sap-backend-node
+cd sap-backend-node
+npm init -y</code></pre>
                         </div>
                     </section>
                     
                     <section id="backend-deps">
                         <h3 class="text-2xl font-bold mb-3">Backend: Langkah 2 - Instalasi Dependensi</h3>
-                        <p class="text-slate-600 mb-4">Kita akan menambahkan beberapa pustaka penting untuk berinteraksi dengan MongoDB, mengelola variabel lingkungan, menangani autentikasi JWT, dan melakukan validasi data.</p>
+                        <p class="text-slate-600 mb-4">Kita akan menginstal Express.js sebagai kerangka server, Mongoose untuk interaksi dengan MongoDB, dan pustaka lain untuk autentikasi dan manajemen environment.</p>
                         <div class="code-block-wrapper">
-                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash"># Untuk interaksi dengan MongoDB
-npm install @nestjs/mongoose mongoose
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash"># Dependensi utama
+npm install express mongoose jsonwebtoken bcryptjs cors dotenv
 
-# Untuk manajemen environment variables (.env)
-npm install @nestjs/config
-
-# Untuk autentikasi dengan JWT dan hashing password
-npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
-npm install --save-dev @types/passport-jwt @types/bcrypt
-
-# Untuk validasi data (DTOs)
-npm install class-validator class-transformer</code></pre>
+# Dependensi development (untuk auto-restart server)
+npm install -D nodemon</code></pre>
+                        </div>
+                    </section>
+                    
+                    <section id="backend-struktur">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 3 - Struktur Proyek</h3>
+                        <p class="text-slate-600 mb-4">Membuat struktur folder yang baik akan membuat kode lebih terorganisir dan mudah dikelola.</p>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">sap-backend-node/
+├── controllers/    # Logika untuk menangani request
+├── middleware/     # Fungsi untuk autentikasi, otorisasi, dll.
+├── models/         # Skema database Mongoose
+├── routes/         # Definisi endpoint API
+├── .env            # Variabel lingkungan
+├── package.json
+└── server.js       # Titik masuk utama aplikasi</code></pre>
                         </div>
                     </section>
                     
                     <section id="backend-config">
-                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 3 - Konfigurasi Database & Lingkungan</h3>
-                        <p class="text-slate-600 mb-4">Konfigurasi koneksi ke MongoDB dan rahasia JWT melalui file `.env` untuk menjaga keamanan kredensial. Kemudian, muat konfigurasi ini ke dalam modul utama aplikasi NestJS.</p>
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 4 - Konfigurasi Server & Database</h3>
+                        <p class="text-slate-600 mb-4">Atur file utama `server.js` untuk menjalankan server Express dan menghubungkannya ke MongoDB menggunakan Mongoose.</p>
                         <h4 class="font-semibold mt-4 mb-2">File: .env</h4>
                         <div class="code-block-wrapper">
-                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">MONGO_URI=mongodb://localhost:27017/sap_db
-JWT_SECRET=RAHASIA_SUPER_SECRET_JANGAN_DIBAGIKAN</code></pre>
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">MONGO_URI=mongodb://localhost:27017/sap_db_node
+JWT_SECRET=RAHASIA_SUPER_SECRET_JANGAN_DIBAGIKAN
+PORT=5000</code></pre>
                         </div>
-                        <h4 class="font-semibold mt-4 mb-2">File: src/app.module.ts</h4>
+                        <h4 class="font-semibold mt-4 mb-2">File: server.js</h4>
                         <div class="code-block-wrapper">
-                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">// src/app.module.ts
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-// ... modul lain akan ditambahkan di sini
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-javascript">const express = require('express');
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
-@Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-      }),
-      inject: [ConfigService],
-    }),
-    // ... modul lain akan ditambahkan di sini
-  ],
-  // ... controllers and providers
-})
-export class AppModule {}</code></pre>
+dotenv.config();
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json()); // Untuk parsing application/json
+
+// Koneksi ke Database
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB Terhubung...'))
+  .catch(err => console.error(err));
+
+// Routes (akan kita tambahkan nanti)
+app.get('/', (req, res) => {
+    res.send('API SAP Berjalan');
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server berjalan di port ${PORT}`));</code></pre>
+                        </div>
+                         <h4 class="font-semibold mt-4 mb-2">Tambahkan script ke package.json</h4>
+                         <p class="text-slate-600 mb-4">Tambahkan skrip `start` dan `dev` untuk memudahkan menjalankan server.</p>
+                        <div class="code-block-wrapper">
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-json">"scripts": {
+  "start": "node server.js",
+  "dev": "nodemon server.js"
+},</code></pre>
                         </div>
                     </section>
 
-                    <section id="backend-auth">
-                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 4 - Modul Autentikasi (Auth)</h3>
-                        <p class="text-slate-600 mb-4">Modul ini adalah inti dari sistem keamanan aplikasi, menangani proses login dan melindungi endpoint dengan JSON Web Tokens (JWT). Kita akan membuat skema pengguna, layanan validasi, dan strategi proteksi rute.</p>
-                        
-                        <h4 class="font-semibold mt-4 mb-2">Generate Modul</h4>
+                    <section id="backend-models">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 5 - Membuat Models (Schema)</h3>
+                        <p class="text-slate-600 mb-4">Definisikan struktur data menggunakan Mongoose Schema. Ini mirip dengan langkah di NestJS, tetapi implementasinya dalam konteks Express.</p>
+                        <h4 class="font-semibold mt-4 mb-2">File: models/User.js</h4>
                         <div class="code-block-wrapper">
-                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash">nest g module auth
-nest g service auth
-nest g controller auth
-nest g module users
-nest g service users
-nest g controller users</code></pre>
-                        </div>
+                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-javascript">const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
-                        <h4 class="font-semibold mt-4 mb-2">File: src/users/schemas/user.schema.ts</h4>
-                        <div class="code-block-wrapper">
-                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
-import * as bcrypt from 'bcrypt';
+const UserSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { 
+        type: String, 
+        enum: ['SuperAdmin', 'Admin Perusahaan', 'Karyawan'], 
+        required: true 
+    },
+    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' }
+}, { timestamps: true });
 
-export enum UserRole {
-  SUPER_ADMIN = 'SuperAdmin',
-  COMPANY_ADMIN = 'Admin Perusahaan',
-  EMPLOYEE = 'Karyawan',
-}
-
-@Schema({ timestamps: true })
-export class User extends Document {
-  // ... props: email, password, name, role, company
-}
-
-export const UserSchema = SchemaFactory.createForClass(User);
-
-UserSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  next();
-});</code></pre>
-                        </div>
-
-                         <h4 class="font-semibold mt-4 mb-2">File: src/auth/guards/roles.guard.ts</h4>
-                        <div class="code-block-wrapper">
-                            <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { UserRole } from '../../users/schemas/user.schema';
-
-@Injectable()
-export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
-
-  canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>('roles', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (!requiredRoles) {
-      return true;
+// Hash password sebelum menyimpan
+UserSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) {
+        return next();
     }
-    const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.some((role) => user.role?.includes(role));
-  }
-}</code></pre>
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+module.exports = mongoose.model('User', UserSchema);</code></pre>
                         </div>
                     </section>
                     
-                    <section id="backend-crud">
-                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 5 - Modul CRUD</h3>
-                        <p class="text-slate-600 mb-4">Setelah autentikasi siap, kita akan membangun modul untuk setiap fitur utama (Perusahaan, Karyawan, dll.). Setiap modul akan mengikuti pola: Skema -> DTO -> Modul -> Controller -> Service. Endpoint akan dilindungi oleh role guard yang telah kita buat.</p>
-                         <h4 class="font-semibold mt-4 mb-2">Contoh Controller: src/companies/companies.controller.ts</h4>
+                    <section id="backend-routes">
+                        <h3 class="text-2xl font-bold mb-3">Backend: Langkah 6 - Membuat Routes & Controllers</h3>
+                        <p class="text-slate-600 mb-4">Definisikan endpoint API di folder `routes` dan pisahkan logikanya di folder `controllers`. Kita juga akan membuat middleware untuk proteksi rute.</p>
+                        <h4 class="font-semibold mt-4 mb-2">Contoh Middleware: middleware/auth.js</h4>
                         <div class="code-block-wrapper">
-                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-typescript">import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { CompaniesService } from './companies.service';
-import { CreateCompanyDto } from './dto/create-company.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../users/schemas/user.schema';
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-javascript">const jwt = require('jsonwebtoken');
 
-@UseGuards(AuthGuard('jwt'), RolesGuard)
-@Controller('companies')
-export class CompaniesController {
-  constructor(private readonly companiesService: CompaniesService) {}
+const protect = (req, res, next) => {
+    // ... logika verifikasi token dari header
+};
 
-  @Post()
-  @Roles(UserRole.SUPER_ADMIN) // Hanya SuperAdmin yang bisa membuat
-  create(@Body() createCompanyDto: CreateCompanyDto) {
-    return this.companiesService.create(createCompanyDto);
-  }
-  // ... (Implementasi Get, Patch, Delete)
-}</code></pre>
+const authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({ message: 'Akses ditolak' });
+        }
+        next();
+    };
+};
+
+module.exports = { protect, authorize };</code></pre>
+                        </div>
+                         <h4 class="font-semibold mt-4 mb-2">Contoh Controller: controllers/companies.js</h4>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-javascript">const Company = require('../models/Company');
+
+// @desc    Buat Perusahaan Baru
+// @route   POST /api/v1/companies
+// @access  Private/SuperAdmin
+exports.createCompany = async (req, res, next) => {
+    try {
+        const company = await Company.create(req.body);
+        res.status(201).json({ success: true, data: company });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};</code></pre>
+                        </div>
+                        <h4 class="font-semibold mt-4 mb-2">Contoh Route: routes/companies.js</h4>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-javascript">const express = require('express');
+const { createCompany } = require('../controllers/companies');
+const { protect, authorize } = require('../middleware/auth');
+
+const router = express.Router();
+
+router.route('/')
+    .post(protect, authorize('SuperAdmin'), createCompany);
+
+module.exports = router;</code></pre>
+                        </div>
+                        <h4 class="font-semibold mt-4 mb-2">Hubungkan Routes di server.js</h4>
+                        <div class="code-block-wrapper">
+                           <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-javascript">// ... di dalam server.js
+const companyRoutes = require('./routes/companies');
+// ...
+
+// Mount routers
+app.use('/api/v1/companies', companyRoutes);
+// ...</code></pre>
                         </div>
                     </section>
                     
@@ -401,7 +379,14 @@ npx tailwindcss init -p</code></pre>
                         <div class="code-block-wrapper">
                             <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-jsx">import { createContext, useState, useEffect, useContext } from 'react';
 import jwt_decode from 'jwt-decode';
-import apiClient from '../api/axios';
+import axios from 'axios';
+
+// Buat instance Axios
+const apiClient = axios.create({
+  baseURL: 'http://localhost:5000/api/v1', // Sesuaikan dengan URL backend Node.js Anda
+});
+
+// ... (Sisa kode AuthContext tetap sama) ...
 
 const AuthContext = createContext();
 
@@ -411,16 +396,18 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       const decoded = jwt_decode(token);
-      setUser({ email: decoded.email, role: decoded.role, id: decoded.sub });
+      setUser({ email: decoded.email, role: decoded.role, id: decoded.id });
     } else {
+      delete apiClient.defaults.headers.common['Authorization'];
       setUser(null);
     }
   }, [token]);
 
   const login = async (email, password) => {
-    const response = await apiClient.post('/auth/login', { email, password });
-    const newToken = response.data.access_token;
+    const response = await apiClient.post('/auth/login', { email, password }); // endpoint mungkin perlu disesuaikan
+    const newToken = response.data.token;
     setToken(newToken);
     localStorage.setItem('authToken', newToken);
   };
@@ -458,7 +445,6 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           
-          {/* Rute untuk SuperAdmin */}
           <Route element={<ProtectedRoute allowedRoles={['SuperAdmin']} />}>
             <Route path="/superadmin/dashboard" element={<DashboardSuperAdmin />} />
           </Route>
@@ -524,8 +510,8 @@ export default LoginPage;</code></pre>
                             <div>
                                 <h4 class="font-semibold mb-2">1. Jalankan Backend</h4>
                                 <div class="code-block-wrapper">
-                                    <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash"># di folder sap-backend
-npm run start:dev</code></pre>
+                                    <pre class="bg-slate-800 text-white p-4 rounded-md overflow-x-auto"><code class="language-bash"># di folder sap-backend-node
+npm run dev</code></pre>
                                 </div>
                             </div>
                             <div>
@@ -563,7 +549,8 @@ npm run dev</code></pre>
                 const code = wrapper.querySelector('pre');
                 const copyButton = document.createElement('button');
                 copyButton.textContent = 'Salin';
-                copyButton.className = 'absolute top-2 right-2 bg-slate-600 hover:bg-slate-500 text-white text-xs font-semibold py-1 px-2 rounded-md transition-colors duration-200';
+                copyButton.className = 'absolute top-2 right-2 bg-slate-600 hover:bg-slate-500 text-white text-xs font-semibold py-1 px-2 rounded-md transition-colors duration-200 opacity-0 group-hover:opacity-100';
+                wrapper.classList.add('group');
                 wrapper.style.position = 'relative';
                 wrapper.appendChild(copyButton);
 
@@ -587,15 +574,12 @@ npm run dev</code></pre>
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href').substring(1) === entry.target.id) {
-                                link.classList.add('active');
-                            }
-                        });
+                        const id = entry.target.getAttribute('id');
+                        document.querySelector('.nav-link.active')?.classList.remove('active');
+                        document.querySelector(`.nav-link[href="#${id}"]`)?.classList.add('active');
                     }
                 });
-            }, { rootMargin: '-30% 0px -70% 0px' });
+            }, { rootMargin: '-20% 0px -80% 0px' });
 
             sections.forEach(section => {
                 observer.observe(section);
